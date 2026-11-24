@@ -1,0 +1,20 @@
+{
+  "name": "pixhift",
+  "version": "1.0.0",
+  "license": "Unlicense",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc && node scripts/assets.mjs",
+    "lint": "tsc --noEmit",
+    "dev": "npm run build && cargo run --manifest-path src-tauri/Cargo.toml --features custom-protocol",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "typescript": "~5.9.3"
+  }
+}

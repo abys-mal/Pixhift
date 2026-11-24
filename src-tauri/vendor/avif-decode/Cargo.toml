@@ -1,0 +1,18 @@
+[package]
+name = "avif-decode"
+version = "3.0.0"
+edition = "2024"
+license = "BSD-3-Clause"
+repository = "https://github.com/kornelski/avif-decode"
+publish = false
+autobins = false
+
+[dependencies]
+avif-parse = "2.1"
+bytemuck = "1"
+imgref = "1.12"
+log = "0.4"
+quick-error = "2"
+rgb = { version = "0.8", features = ["bytemuck"], default-features = false }
+yuv = "0.8.19"
+rav1d = { version = "1.1", features = ["bitdepth_8", "bitdepth_16"], default-features = false }

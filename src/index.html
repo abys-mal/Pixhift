@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Pixhift</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="main.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand"><img src="pixhift.svg" alt="" width="34" height="34"><span>Pixhift</span></div>
+      <button id="settings-button" class="icon-button" title="Settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 3.5h4l.7 2.4 1.8 1 2.4-.6 2 3.4-1.7 1.8v2l1.7 1.8-2 3.4-2.4-.6-1.8 1-.7 2.4h-4l-.7-2.4-1.8-1-2.4.6-2-3.4 1.7-1.8v-2L3.1 9.7l2-3.4 2.4.6 1.8-1z"/>
+          <circle cx="12" cy="12.5" r="3"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <p id="notification" class="notification" role="status" hidden></p>
+    <section id="home" class="page" aria-labelledby="home-title">
+      <div class="page-title">
+        <h1 id="home-title" tabindex="-1">Convert your images</h1>
+        <p>Convert a folder of photos or update their metadata in one batch.</p>
+      </div>
+
+      <form id="batch-form">
+        <section class="group" aria-labelledby="source-title">
+          <h2 id="source-title">Source folder</h2>
+          <div id="drop-zone" class="drop-zone">
+            <div class="folder-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4l2 2.5h9A1.5 1.5 0 0 1 21 9v8.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/><path d="M12 10.5v5m-2.5-2.5h5"/></svg>
+            </div>
+            <div class="drop-copy">
+              <strong id="source-label">Drop a folder here</strong>
+              <span id="source-path">One folder per batch</span>
+            </div>
+            <button type="button" id="source-button" class="button secondary">Choose folder</button>
+          </div>
+        </section>
+
+        <section class="group card" aria-labelledby="conversion-title">
+          <div class="card-heading"><h2 id="conversion-title">Conversion and metadata</h2></div>
+          <div class="fields two">
+            <label>Output format
+              <select id="format">
+                <option value="jpeg">JPEG · JPG</option>
+                <option value="png">PNG</option>
+                <option value="webp">WebP · lossless</option>
+                <option value="avif">AVIF</option>
+                <option value="tiff">TIFF</option>
+                <option value="bmp">BMP</option>
+                <option value="gif">GIF</option>
+                <option value="">Keep original format</option>
+              </select>
+            </label>
+            <label>Metadata
+              <select id="metadata">
+                <option value="preserve">Preserve metadata</option>
+                <option value="removeGps">Remove GPS only</option>
+                <option value="removeAll">Remove all metadata</option>
+                <option value="edit">Edit metadata</option>
+              </select>
+            </label>
+          </div>
+          <div id="quality-row" class="quality-row">
+            <label for="quality">Conversion quality</label>
+            <input type="range" id="quality" min="1" max="100" value="90">
+            <output id="quality-value" for="quality">90</output>
+          </div>
+          <div id="editor" class="editor" hidden>
+            <p>Leave any field blank to keep its current value.</p>
+            <div class="fields two">
+              <label>Capture date and time <input type="datetime-local" step="1" id="captured"></label>
+              <label>Author or artist <input type="text" id="author" maxlength="1000"></label>
+              <label>Title <input type="text" id="title" maxlength="1000"></label>
+              <label>Copyright <input type="text" id="copyright" maxlength="1000"></label>
+              <label class="full-width">Description <textarea rows="2" id="description" maxlength="1000"></textarea></label>
+            </div>
+            <details>
+              <summary>Camera and GPS fields</summary>
+              <div class="fields two details-fields">
+                <label>Camera make <input type="text" id="make" maxlength="1000"></label>
+                <label>Camera model <input type="text" id="model" maxlength="1000"></label>
+                <label class="full-width">Lens model <input type="text" id="lens" maxlength="1000"></label>
+                <label>Latitude <input type="number" id="latitude" step="any" min="-90" max="90" placeholder="Decimal degrees"></label>
+                <label>Longitude <input type="number" id="longitude" step="any" min="-180" max="180" placeholder="Decimal degrees"></label>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="group card" aria-labelledby="destination-title">
+          <div class="card-heading"><h2 id="destination-title">Output destination</h2></div>
+          <div class="fields two">
+            <label>Save images
+              <select id="destination">
+                <option value="folder">In a different folder</option>
+                <option value="alongside">Alongside originals</option>
+                <option value="overwrite">Overwrite originals</option>
+              </select>
+            </label>
+            <label>Filename conflicts
+              <select id="conflict">
+                <option value="rename">Automatically rename</option>
+                <option value="skip">Skip existing filenames</option>
+                <option value="replace">Replace destination files</option>
+              </select>
+            </label>
+          </div>
+          <div id="output-row" class="path-row">
+            <span id="output-path">No output folder selected</span>
+            <button type="button" id="output-button" class="button secondary small">Choose folder</button>
+          </div>
+          <p id="overwrite-note" class="inline-notice" hidden>Same-format metadata changes can replace originals. Format conversions save a new file alongside the original.</p>
+        </section>
+
+        <div class="actions home-actions">
+          <span id="scan-scope" class="muted"></span>
+          <button type="submit" id="prepare-button" class="button primary">Review batch <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </section>
+
+    <section id="preview" class="page" aria-labelledby="preview-title" hidden>
+      <button type="button" class="button back" data-page="home">← Back</button>
+      <div class="page-title">
+        <h1 id="preview-title" tabindex="-1">Batch preview</h1>
+        <p>Review the files and destination before Pixhift saves anything.</p>
+      </div>
+      <div id="preview-metrics" class="metrics"></div>
+      <dl id="preview-details" class="card summary-list"></dl>
+      <div id="preview-notes" class="card notices" hidden>
+        <h2>Before you start</h2>
+        <ul id="preview-warnings"></ul>
+      </div>
+      <div id="preview-issues" class="card notices" hidden>
+        <h2>Files to check</h2>
+        <ul id="preview-files" class="records"></ul>
+      </div>
+      <div class="actions end">
+        <button type="button" id="preview-start" class="button primary">Start Processing <span aria-hidden="true">→</span></button>
+      </div>
+    </section>
+
+    <section id="processing" class="page" aria-labelledby="processing-title" hidden>
+      <div class="page-title">
+        <h1 id="processing-title" tabindex="-1">Processing images</h1>
+        <p id="progress-count" aria-live="polite">Preparing workers…</p>
+      </div>
+      <div class="card progress-card">
+        <progress id="progress" value="0" max="1" aria-label="Batch progress"></progress>
+        <p id="progress-file" class="file-path"></p>
+      </div>
+      <div class="actions end"><button id="cancel-button" type="button" class="button secondary">Cancel processing</button></div>
+    </section>
+
+    <section id="results" class="page" aria-labelledby="results-title" hidden>
+      <button type="button" class="button back" data-page="home">← Back to batch</button>
+      <div class="page-title"><h1 id="results-title" tabindex="-1">Batch complete</h1><p id="duration"></p></div>
+      <div id="result-metrics" class="metrics"></div>
+      <div class="card path-row"><span id="result-path" class="file-path"></span><button type="button" id="open-output" class="button secondary">Open output folder</button></div>
+      <div id="result-notes" class="card notices" hidden>
+        <h2>File details</h2>
+        <ul id="result-files" class="records"></ul>
+        <button type="button" class="button secondary small" id="more-results" hidden>Show more</button>
+      </div>
+      <div class="actions end wrap">
+        <button type="button" id="export-txt" class="button secondary">Export TXT</button>
+        <button type="button" id="export-csv" class="button secondary">Export CSV</button>
+        <button type="button" class="button primary" data-page="home">Return to batch</button>
+      </div>
+    </section>
+
+    <section id="settings" class="page" aria-labelledby="settings-title" hidden>
+      <button type="button" class="button back" data-page="home">← Back</button>
+      <div class="page-title"><h1 id="settings-title" tabindex="-1">Settings</h1></div>
+      <div class="card settings-card">
+        <label class="setting-row"><span>Theme</span><select id="theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        <label class="setting-row"><span>Automatically show processing preview</span><input type="checkbox" id="auto-preview"></label>
+        <label class="setting-row"><span>Include subfolders</span><input type="checkbox" id="recursive"></label>
+        <label class="setting-row"><span>Preserve folder structure</span><input type="checkbox" id="structure"></label>
+        <label class="setting-row"><span>Remember last output folder</span><input type="checkbox" id="remember-output"></label>
+      </div>
+      <button type="button" class="card navigation-row" data-page="advanced"><span>Advanced Settings</span><span aria-hidden="true">→</span></button>
+      <section class="card notices about-card" aria-labelledby="about-title">
+        <div class="about-title">
+          <img src="pixhift.svg" alt="" width="38" height="38">
+          <div><h2 id="about-title">About Pixhift</h2><p>Local batch image conversion and metadata editing.</p></div>
+        </div>
+        <dl class="summary-list">
+          <dt>Build</dt>
+          <dd id="about-build">Tauri 2 and Rust</dd>
+          <dt>License</dt>
+          <dd>The Unlicense applies to Pixhift’s original code and assets. Third-party licenses and codec patent obligations apply separately.</dd>
+          <dt>Third-party acknowledgments</dt>
+          <dd>Tauri, image, heic-rs, jxl-oxide, img-parts, little_exif, moxcms, avif-decode, rav1d, ravif, and their dependencies. See the project’s third-party notices for license details.</dd>
+        </dl>
+      </section>
+    </section>
+
+    <section id="advanced" class="page" aria-labelledby="advanced-title" hidden>
+      <button type="button" class="button back" data-page="settings">← Settings</button>
+      <div class="page-title"><h1 id="advanced-title" tabindex="-1">Advanced Settings</h1></div>
+      <div class="card settings-card">
+        <h2>Processing</h2>
+        <label class="setting-row">
+          <span>Concurrent workers<small>Automatic uses available CPU cores and the memory limit.</small></span>
+          <select id="worker-mode"><option value="automatic">Automatic</option><option value="manual">Manual</option></select>
+        </label>
+        <label id="workers-row" class="setting-row" hidden><span>Worker count</span><input type="number" id="workers" min="1" max="16" value="2"></label>
+        <label class="setting-row"><span>Estimated memory limit<small>Shared across active workers.</small></span><select id="memory"><option value="128">128 MiB</option><option value="256">256 MiB</option><option value="512">512 MiB</option><option value="768">768 MiB</option><option value="1024">1 GiB</option><option value="2048">2 GiB</option><option value="4096">4 GiB</option><option value="8192">8 GiB</option></select></label>
+      </div>
+      <div class="card settings-card">
+        <h2>File handling and diagnostics</h2>
+        <label class="setting-row"><span>Ignore hidden files and folders</span><input type="checkbox" id="ignore-hidden"></label>
+        <label class="setting-row"><span>Flatten JPEG transparency onto white</span><input type="checkbox" id="flatten-alpha"></label>
+        <label class="setting-row"><span>Write batch diagnostics to the development terminal</span><input type="checkbox" id="diagnostics"></label>
+      </div>
+      <div class="actions end"><button type="button" id="reset-settings" class="button secondary">Reset to Defaults</button></div>
+    </section>
+
+  </main>
+
+  <dialog id="overwrite-dialog" aria-labelledby="overwrite-title">
+    <form method="dialog">
+      <h2 id="overwrite-title">Allow original files to be modified?</h2>
+      <p>Same-format metadata changes can replace original files. Format conversions write a separate sibling file and keep their sources.</p>
+      <div class="actions end">
+        <button class="button secondary" value="cancel" autofocus>Back</button>
+        <button class="button primary" value="confirm">Start Processing</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,24 @@
+[package]
+name = "pixhift-core"
+version = "1.0.0"
+license = "Unlicense"
+edition = "2024"
+rust-version = "1.98"
+publish = false
+
+[dependencies]
+anyhow = "1"
+avif-decode.workspace = true
+avif-parse = "2.1"
+bytemuck = "1"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+heic-rs = { version = "0.1.5", default-features = false, features = ["std"] }
+image = { version = "0.25.10", default-features = false, features = ["jpeg", "png", "webp", "tiff", "bmp", "gif", "avif"] }
+img-parts = "0.4"
+jxl-oxide = { version = "0.12", default-features = false, features = ["image"] }
+little_exif = "0.6.23"
+moxcms = "0.8"
+serde = { version = "1", features = ["derive"] }
+tempfile = "3"
+tiff = "0.11"
+quick-xml = "0.37"
