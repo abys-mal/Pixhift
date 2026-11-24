@@ -4,6 +4,8 @@ Pixhift is an offline desktop and command-line utility for converting folders of
 
 The current release is **v1.0.0**. See the [changelog](CHANGELOG.md).
 
+**AI DISCLAIMER**: This project was built with the assistence of an AI agent.
+
 ## Run locally on Windows
 
 From the repository root, use PowerShell with Rust 1.98 or newer on the MSVC toolchain, Node.js 20.12 or newer, Visual Studio C++ build tools with a Windows SDK, and Edge WebView2 Runtime.
